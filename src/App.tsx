@@ -2,56 +2,31 @@ import React from 'react';
 import logo from './logo.svg';
 import { Counter } from './features/counter/Counter';
 import './App.css';
+import Modal from './components/commons/Modal';
+import { AppContainer } from './styles';
+import { Column } from './components/commons/Column';
+import { Card } from './components/commons/Card';
+import { AddNewItem } from './components/canban/AddNewItem';
+import { useAppState } from './AppStateContext';
 
 function App() {
+  const [show, setShow] = React.useState(false);
+
+  const { state, dispatch } = useAppState();
+
+  const toggleModal = () => {
+    setShow(!show);
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <>
+      <AppContainer>
+        {state.lists.map((list, i) => (
+          <Column id={list.id} text={list.text} key={list.id} index={i} />
+        ))}
+        <AddNewItem toggleButtonText='+ Add List' onAdd={text => dispatch({ type: "ADD_LIST", payload: text })} />
+      </AppContainer>
+      {/* <Modal show={show} toggleModal={toggleModal} /> */}
+    </>
   );
 }
 

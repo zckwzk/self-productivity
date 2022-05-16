@@ -4,17 +4,25 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { DndProvider } from "react-dnd"
+import { HTML5Backend } from "react-dnd-html5-backend"
 import './index.css';
+import { AppStateProvider } from './AppStateContext';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <DndProvider backend={HTML5Backend}>
     <Provider store={store}>
-      <App />
+      <AppStateProvider>
+        <App />
+      </AppStateProvider>
     </Provider>
-  </React.StrictMode>
+  </DndProvider>
+
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
