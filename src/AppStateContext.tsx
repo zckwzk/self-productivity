@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useReducer } from "react"
 import { v4 as uuid } from 'uuid';
+import { DragItem } from "./components/DragItem";
 import { findItemIndexById } from "./utils/canban/findItemIndexById";
 
 const appData: AppState = {
@@ -20,7 +21,8 @@ const appData: AppState = {
             text: "Done",
             tasks: [{ id: "c3", text: "Begin to use static typing" }]
         }
-    ]
+    ],
+    draggedItem: undefined
 }
 
 
@@ -35,7 +37,8 @@ interface List {
 }
 
 export interface AppState {
-    lists: List[]
+    lists: List[],
+    draggedItem: DragItem | undefined
 }
 
 interface AppStateContextProps {
@@ -70,6 +73,11 @@ type Action =
         type: "ADD_TASK"
         payload: { text: string; taskId: string }
     }
+    |
+    {
+        type: "SET_DRAGGED_ITEM"
+        payload: DragItem | undefined
+    }
 
 const appStateReducer = (state: AppState, action: Action): AppState => {
     switch (action.type) {
@@ -101,6 +109,9 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
             return {
                 ...newState
             }
+        }
+        case "SET_DRAGGED_ITEM": {
+            return { ...state, draggedItem: action.payload }
         }
         default: {
             return state
