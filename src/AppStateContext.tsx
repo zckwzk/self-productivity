@@ -3,6 +3,7 @@ import React, { createContext, useContext, useReducer } from "react"
 import { v4 as uuid } from 'uuid';
 import { DragItem } from "./components/DragItem";
 import { findItemIndexById } from "./utils/canban/findItemIndexById";
+import { moveItem } from "./utils/canban/moveItem";
 
 const appData: AppState = {
     lists: [
@@ -78,6 +79,14 @@ type Action =
         type: "SET_DRAGGED_ITEM"
         payload: DragItem | undefined
     }
+    |
+    {
+        type: "MOVE_LIST"
+        payload: {
+            dragIndex: number
+            hoverIndex: number
+        }
+    }
 
 const appStateReducer = (state: AppState, action: Action): AppState => {
     switch (action.type) {
@@ -112,6 +121,11 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
         }
         case "SET_DRAGGED_ITEM": {
             return { ...state, draggedItem: action.payload }
+        }
+        case "MOVE_LIST": {
+            const { dragIndex, hoverIndex } = action.payload
+            state.lists = moveItem(state.lists, dragIndex, hoverIndex)
+            return { ...state }
         }
         default: {
             return state

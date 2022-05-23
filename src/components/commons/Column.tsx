@@ -1,8 +1,10 @@
 import React, { useRef } from 'react'
+import { useDrop } from 'react-dnd'
 import { useAppState } from '../../AppStateContext'
 import { ColumnContainer, ColumnTitle } from '../../styles'
 import { useItemDrag } from '../../utils/hooks/useItemDrag'
 import { AddNewItem } from '../canban/AddNewItem'
+import { DragItem } from '../DragItem'
 import { Card } from './Card'
 
 interface columnProps {
@@ -16,7 +18,22 @@ export const Column = ({ text, index, id }: React.PropsWithChildren<columnProps>
     const { state, dispatch } = useAppState();
     const ref = useRef<HTMLDivElement>(null)
     const { drag } = useItemDrag({ type: 'COLUMN', id, index, text })
-    drag(ref);
+    const [, drop] = useDrop({
+        accept: "COLUMN",
+        hover(item: DragItem) {
+            const dragIndex = item.index
+            const hoverIndex = index
+            if (dragIndex === hoverIndex) {
+                return
+            }
+            dispatch({
+                type: "MOVE_LIST", payload: { dragIndex, hoverIndex }
+            })
+            item.index = hoverIndex
+        }
+    })
+
+    drag(drop(ref));
 
 
 
