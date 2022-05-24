@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import { useDrop } from 'react-dnd'
 import { useAppState } from '../../AppStateContext'
 import { ColumnContainer, ColumnTitle } from '../../styles'
+import { isHidden } from '../../utils/canban/isHidden'
 import { useItemDrag } from '../../utils/hooks/useItemDrag'
 import { AddNewItem } from '../canban/AddNewItem'
 import { DragItem } from '../DragItem'
@@ -38,7 +39,7 @@ export const Column = ({ text, index, id }: React.PropsWithChildren<columnProps>
 
 
     return (
-        <ColumnContainer ref={ref}>
+        <ColumnContainer ref={ref} isHidden={isHidden(state.draggedItem, "COLUMN", id)}>
             <ColumnTitle>{text}</ColumnTitle>
             {state.lists[index].tasks.map((task, i) => (
                 <Card text={task.text} key={task.id} index={i} />
